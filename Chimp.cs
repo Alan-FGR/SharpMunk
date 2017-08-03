@@ -11,6 +11,7 @@ using cpBodyP = System.IntPtr;
 
 //TODO namespace
 
+//[System.Security.SuppressUnmanagedCodeSecurity] //TODO uncomment for performance
 public class ChimpPtr
 {
     public readonly IntPtr pointer;
@@ -27,24 +28,52 @@ public class ChimpPtr
     {
         return new ChimpPtr(ptr);
     }
+
+    private const string F = "chipmunk.dll";
+
+    //Misc
+    public static Func<cpFloat, cpFloat, cpFloat, cpVect, cpFloat> MomentForCircle = cpMomentForCircle; //TODO gen these auto
+    [DllImport(F)] public static extern     cpFloat cpMomentForCircle(cpFloat m, cpFloat r1, cpFloat r2, cpVect offset);
+                   
+    //Space        
+    [DllImport(F)] protected static extern  cpSpaceP cpSpaceNew ();
+    [DllImport(F)] protected static extern  void cpSpaceStep (cpSpaceP space, cpFloat dt);
+    [DllImport(F)] protected static extern  void cpSpaceSetGravity (cpSpaceP space, cpVect gv);
+    [DllImport(F)] protected static extern  cpBodyP cpSpaceGetStaticBody(cpSpaceP space);
+    [DllImport(F)] protected static extern  cpShapeP cpSpaceAddShape(cpSpaceP space, cpShapeP shape);
+    [DllImport(F)] protected static extern  cpBodyP cpSpaceAddBody(cpSpaceP space, cpBodyP body);
+                                            
+    //Shape                                 
+    [DllImport(F)] protected static extern  void cpShapeSetFriction(cpShapeP shape, cpFloat friction);
+    [DllImport(F)] protected static extern  cpShapeP cpSegmentShapeNew(cpBodyP body, cpVect a, cpVect b, cpFloat r);
+                                            
+    //Body                                  
+    [DllImport(F)] protected static extern  cpBodyP cpSpaceAddBody(cpSpace space, cpBodyP body);
+    [DllImport(F)] protected static extern  cpBodyP cpBodyNew(cpFloat mass, cpFloat moment);
+
+}
+
+public static class cpUtil
+{
+    
 }
 
 public class cpSpace : ChimpPtr
 {
-    public cpSpace() : base(Chimp.cpSpaceNew())
+    public cpSpace() : base(cpSpaceNew())
     {
     }
 
-    public cpBody StaticBody => new cpBody(Chimp.cpSpaceGetStaticBody(pointer)); //TODO cache
+    public cpBody StaticBody => new cpBody(cpSpaceGetStaticBody(pointer)); //TODO cache
 
     public void SetGravity(cpVect gv)
     {
-        Chimp.cpSpaceSetGravity(pointer, gv);
+        cpSpaceSetGravity(pointer, gv);
     }
 
     public void AddShape(cpShape shape)
     {
-        Chimp.cpSpaceAddShape(pointer, shape);
+        cpSpaceAddShape(pointer, shape);
     }
 }
 
@@ -56,18 +85,18 @@ public class cpShape : ChimpPtr
 
     public static cpShape NewSegment(cpBody body, cpVect a, cpVect b, cpFloat r)
     {
-        return new cpShape(Chimp.cpSegmentShapeNew(body, a, b, r));
+        return new cpShape(cpSegmentShapeNew(body, a, b, r));
     }
 
     public void SetFriction(cpFloat f)
     {
-        Chimp.cpShapeSetFriction(pointer, f);
+        cpShapeSetFriction(pointer, f);
     }
 }
 
 public class cpBody : ChimpPtr
 {
-    public cpBody(cpFloat mass, cpFloat moment) : base(Chimp.cpBodyNew(mass, moment))
+    public cpBody(cpFloat mass, cpFloat moment) : base(cpBodyNew(mass, moment))
     {
     }
 
@@ -96,54 +125,6 @@ public struct ChimpTransform
     public float Angle;
 }
 
-public static class cpUtil
-{
-    public static Func<cpFloat, cpFloat, cpFloat, cpVect, cpFloat> MomentForCircle = Chimp.cpMomentForCircle;
-}
 
-//[System.Security.SuppressUnmanagedCodeSecurity] //TODO uncomment for performance
-internal static class Chimp
-{
-    private const string F = "chipmunk.dll";
 
-    //Misc
-    [DllImport(F)] internal static extern     cpFloat cpMomentForCircle(cpFloat m, cpFloat r1, cpFloat r2, cpVect offset);
-                   
-    //Space        
-    [DllImport(F)] internal static extern     cpSpaceP cpSpaceNew ();
-    [DllImport(F)] internal static extern     void cpSpaceStep (cpSpaceP space, cpFloat dt);
-    [DllImport(F)] internal static extern     void cpSpaceSetGravity (cpSpaceP space, cpVect gv);
-    [DllImport(F)] internal static extern     cpBodyP cpSpaceGetStaticBody(cpSpaceP space);
-    [DllImport(F)] internal static extern     cpShapeP cpSpaceAddShape(cpSpaceP space, cpShapeP shape);
-    [DllImport(F)] internal static extern     cpBodyP cpSpaceAddBody(cpSpaceP space, cpBodyP body);
-                   
-    //Shape        
-    [DllImport(F)] internal static extern     void cpShapeSetFriction(cpShapeP shape, cpFloat friction);
-    [DllImport(F)] internal static extern     cpShapeP cpSegmentShapeNew(cpBodyP body, cpVect a, cpVect b, cpFloat r);
-                   
-    //Body         
-    [DllImport(F)] internal static extern     cpBodyP cpSpaceAddBody(cpSpace space, cpBodyP body);
-    [DllImport(F)] internal static extern     cpBodyP cpBodyNew(cpFloat mass, cpFloat moment);
 
-//    [DllImport(F)] internal static extern     ;
-//    [DllImport(F)] internal static extern     ;
-//    [DllImport(F)] internal static extern     ;
-//    [DllImport(F)] internal static extern     ;
-//    [DllImport(F)] internal static extern     ;
-//    [DllImport(F)] internal static extern     ;
-//    [DllImport(F)] internal static extern     ;
-//    [DllImport(F)] internal static extern     ;
-//    [DllImport(F)] internal static extern     ;
-//    [DllImport(F)] internal static extern     ;
-//    [DllImport(F)] internal static extern     ;
-//    [DllImport(F)] internal static extern     ;
-//    [DllImport(F)] internal static extern     ;
-//    [DllImport(F)] internal static extern     ;
-//    [DllImport(F)] internal static extern     ;
-//    [DllImport(F)] internal static extern     ;
-//    [DllImport(F)] internal static extern     ;
-//    [DllImport(F)] internal static extern     ;
-//    [DllImport(F)] internal static extern     ;
-//    [DllImport(F)] internal static extern     ;
-
-}
