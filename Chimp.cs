@@ -13,22 +13,26 @@ using cpBodyP = System.IntPtr;
 
 public class ChimpPtr
 {
-    public IntPtr pointer;
+    public readonly IntPtr pointer;
+
+    public ChimpPtr(IntPtr ptr)
+    {
+        pointer = ptr;
+    }
     public static implicit operator IntPtr(ChimpPtr obj)
     {
         return obj.pointer;
     }
     public static implicit operator ChimpPtr(IntPtr ptr)
     {
-        return new ChimpPtr{pointer = ptr};
+        return new ChimpPtr(ptr);
     }
 }
 
 public class cpSpace : ChimpPtr
 {
-    public cpSpace()
+    public cpSpace() : base(Chimp.cpSpaceNew())
     {
-        pointer = Chimp.cpSpaceNew();
     }
 
     public cpBody StaticBody => new cpBody(Chimp.cpSpaceGetStaticBody(pointer));
@@ -46,12 +50,7 @@ public class cpSpace : ChimpPtr
 
 public class cpShape : ChimpPtr
 {
-    public cpShape(cpShapeP shapePtr)
-    {
-        pointer = shapePtr;
-    }
-
-    public cpShape(cpSpace space)
+    public cpShape(cpShapeP shapePtr) : base (shapePtr)
     {
     }
 
@@ -68,9 +67,8 @@ public class cpShape : ChimpPtr
 
 public class cpBody : ChimpPtr
 {
-    public cpBody(cpBodyP bodyPtr)
+    public cpBody(cpBodyP bodyPtr) : base(bodyPtr)
     {
-        pointer = bodyPtr;
     }
 }
 
@@ -99,6 +97,7 @@ public static class cpUtil
     public static Func<cpFloat, cpFloat, cpFloat, cpVect, cpFloat> MomentForCircle = Chimp.cpMomentForCircle;
 }
 
+//[System.Security.SuppressUnmanagedCodeSecurity] //TODO uncomment for performance
 internal static class Chimp
 {
     private const string F = "chipmunk.dll";
