@@ -172,7 +172,7 @@ Time is 2.00. ballBody is at (28.93, -6.27). It's velocity is (26.68, -36.10)
 ```
 
 C99 Code:
-```C99
+```C
 int main(void) {
 
     cpVect gravity = cpv(0, -100);
