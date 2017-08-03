@@ -35,7 +35,7 @@ public class cpSpace : ChimpPtr
     {
     }
 
-    public cpBody StaticBody => new cpBody(Chimp.cpSpaceGetStaticBody(pointer));
+    public cpBody StaticBody => new cpBody(Chimp.cpSpaceGetStaticBody(pointer)); //TODO cache
 
     public void SetGravity(cpVect gv)
     {
@@ -67,6 +67,10 @@ public class cpShape : ChimpPtr
 
 public class cpBody : ChimpPtr
 {
+    public cpBody(cpFloat mass, cpFloat moment) : base(Chimp.cpBodyNew(mass, moment))
+    {
+    }
+
     public cpBody(cpBodyP bodyPtr) : base(bodyPtr)
     {
     }
@@ -111,6 +115,7 @@ internal static class Chimp
     [DllImport(F)] internal static extern     void cpSpaceSetGravity (cpSpaceP space, cpVect gv);
     [DllImport(F)] internal static extern     cpBodyP cpSpaceGetStaticBody(cpSpaceP space);
     [DllImport(F)] internal static extern     cpShapeP cpSpaceAddShape(cpSpaceP space, cpShapeP shape);
+    [DllImport(F)] internal static extern     cpBodyP cpSpaceAddBody(cpSpaceP space, cpBodyP body);
                    
     //Shape        
     [DllImport(F)] internal static extern     void cpShapeSetFriction(cpShapeP shape, cpFloat friction);
@@ -118,9 +123,8 @@ internal static class Chimp
                    
     //Body         
     [DllImport(F)] internal static extern     cpBodyP cpSpaceAddBody(cpSpace space, cpBodyP body);
+    [DllImport(F)] internal static extern     cpBodyP cpBodyNew(cpFloat mass, cpFloat moment);
 
-//    [DllImport(F)] internal static extern     ;
-//    [DllImport(F)] internal static extern     ;
 //    [DllImport(F)] internal static extern     ;
 //    [DllImport(F)] internal static extern     ;
 //    [DllImport(F)] internal static extern     ;
