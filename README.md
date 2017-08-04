@@ -45,9 +45,6 @@ static void Main(string[] args)
 ```
 C# Output:
 ```
-Initializing cpSpace - Chipmunk v7.0.1 (Debug Enabled)
-Compile with -DNDEBUG defined to disable debug mode and runtime assertion checks
-
 Time is 0.00. ballBody is at (0.00, 15.00). It's velocity is (0.00, 0.00)
 Time is 0.02. ballBody is at (0.00, 15.00). It's velocity is (0.00, -1.67)
 [...]
@@ -99,9 +96,6 @@ int main(void) {
 ```
 C99 Output:
 ```
-Initializing cpSpace - Chipmunk v7.0.1 (Debug Enabled)
-Compile with -DNDEBUG defined to disable debug mode and runtime assertion checks
-
 Time is  0.00. ballBody is at ( 0.00, 15.00). It's velocity is ( 0.00,  0.00)
 Time is  0.02. ballBody is at ( 0.00, 15.00). It's velocity is ( 0.00, -1.67)
 [...]
